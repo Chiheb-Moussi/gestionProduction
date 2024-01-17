@@ -3,6 +3,9 @@ import Users from '../pages/Users/Users';
 import AddUser from '../pages/Users/AddUser';
 import Products from '../pages/Products/Products';
 import AddProduct from '../pages/Products/AddProduct';
+import Interventions from '../pages/Interventions/Interventions';
+import AddIntervention from '../pages/Interventions/AddIntervention';
+import InterventionDetail from '../pages/Interventions/InterventionDetail';
 
 const Calendar = lazy(() => import('../pages/Calendar'));
 const Chart = lazy(() => import('../pages/Chart'));
@@ -79,6 +82,21 @@ const coreRoutes = [
     path: '/products/add',
     title: 'Ajouter produit',
     component: AddProduct,
+  },
+  {
+    path: '/interventions',
+    title: 'Liste des interventions',
+    component: Interventions,
+  },
+  {
+    path: '/interventions/add',
+    title: 'Ajouter intervention',
+    component: AddIntervention,
+  },
+  {
+    path: '/interventions/:id',
+    title: 'Intervention',
+    component: InterventionDetail,
   },
 ];
 
