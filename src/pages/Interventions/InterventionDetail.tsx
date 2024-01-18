@@ -1,23 +1,20 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Breadcrumb from "../../components/Breadcrumb";
 import { Intervention } from "../../models/Intervention";
+import InterventionComments from "./InterventionComments";
 
 const InterventionDetail = () => {
-    const navigate = useNavigate();
     const {id : idIntervention} = useParams();
     const interventionsJson = localStorage.getItem('interventions');
     const interventions: Intervention[] = interventionsJson ? JSON.parse(interventionsJson) : [];
     const intervention: Intervention|undefined = interventions.find((i) => i.id === idIntervention);
     if(!intervention) {
-        return <> no intervention found</>
+        return <> Pas d'intervention trouvé</>
     }
 
     const {id, typeIntervention, dateDebut, isOpen,nameLine,actions, comments,dateFin,detailIntervention,rapportInterventions,user} = intervention;
-
     return (
-        <>
-            <Breadcrumb pageName="Ajouter intervention" />
-            <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+            <div className="col-span-12 xl:col-span-8">
                 <div className="flex flex-col gap-9">
                     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -72,8 +69,8 @@ const InterventionDetail = () => {
                     </div>
                 </div>
             </div>
-            
-        </>
+            <InterventionComments idIntervention={id} />
+        </div>
     );
 }
 

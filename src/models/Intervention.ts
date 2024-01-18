@@ -13,12 +13,15 @@ export interface Comment {
     id: string;
     comment: string;
     user: User;
+    date: string;
+    idIntervention: string;
 }
 
 export interface Action {
     id: string;
     action: string;
     user: User;
+    idIntervention: string;
 }
 
 export interface Intervention {
@@ -31,8 +34,6 @@ export interface Intervention {
     isOpen: boolean;
     rapportInterventions?: RapportIntervention[];
     user?: User;
-    comments?: Comment[];
-    actions?: Action[];
 }
 
 

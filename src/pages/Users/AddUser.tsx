@@ -2,14 +2,14 @@ import { useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import SwitcherThree from "../../components/SwitcherThree";
 import { useNavigate } from "react-router-dom";
-import { User } from "../../models/User";
+import { User, UserRoles } from "../../models/User";
 
 const AddUser = () => {
     const roles: string[] = [
-        'Super admin',
-        'Admin',
-        'Opérateur',
-        'Téchnicien'
+      UserRoles.SUPER_ADMIN,
+      UserRoles.ADMIN,
+      UserRoles.OPERATOR,
+      UserRoles.TECHNICIAN
     ];
     const navigate = useNavigate();
     const [username, setUsername] = useState<string>('');
