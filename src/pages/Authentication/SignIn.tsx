@@ -3,6 +3,7 @@ import LogoDark from '../../images/logo/logo.jpg';
 import Logo from '../../images/logo/logo.jpg';
 import { useState } from 'react';
 import { User } from '../../models/User';
+import axios from 'axios';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -20,15 +21,27 @@ const SignIn = () => {
     setError('');
   }
   const loginHandler = () => {
-    const user = users.find((u) => u.username === username && u.password === password)
-    console.log(users);
+    axios.post('http://localhost:8080/api/auth/signin',{
+      username,
+      password
+    }).then((res)=> {
+      const user = res.data.user
+      if(user) {
+        navigate('/')
+        localStorage.setItem('user', JSON.stringify(user))
+      }else {
+        setError('Vous n\'etes pas autorisé!')
+      }
+    })
+    // const user = users.find((u) => u.username === username && u.password === password)
+    // console.log(users);
     
-    if(user) {
-      navigate('/')
-      localStorage.setItem('user', JSON.stringify(user))
-    }else {
-      setError('Vous n\'etes pas autorisé!')
-    }
+    // if(user) {
+    //   navigate('/')
+    //   localStorage.setItem('user', JSON.stringify(user))
+    // }else {
+    //   setError('Vous n\'etes pas autorisé!')
+    // }
   }
 
   return (

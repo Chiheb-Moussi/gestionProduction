@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import SwitcherThree from "../../components/SwitcherThree";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { User, UserRoles } from "../../models/User";
 import axios from "axios";
 
-const AddUser = () => {
+const UpdateUser = () => {
+  const {id} = useParams();
+    const [user, setUser] = useState<User|undefined>(undefined);
     const roles: string[] = [
       UserRoles.SUPER_ADMIN,
       UserRoles.ADMIN,
@@ -13,15 +15,15 @@ const AddUser = () => {
       UserRoles.TECHNICIAN
     ];
     const navigate = useNavigate();
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [nom, setNom] = useState<string>('');
-    const [prenom, setPrenom] = useState<string>('');
-    const [role, setRole] = useState<string>(roles[0]);
-    const [status, setStatus] = useState<boolean>(false);
+    const [username, setUsername] = useState<string>(user?.username ?? '');
+    const [password, setPassword] = useState<string>(user?.password ??'');
+    const [nom, setNom] = useState<string>(user?.nom ??'');
+    const [prenom, setPrenom] = useState<string>(user?.prenom ??'');
+    const [role, setRole] = useState<string>(user?.role ??roles[0]);
+    const [status, setStatus] = useState<boolean>(user?.status ??false);
     const [error, setError] = useState<string>('');
 
-    const addUser = () => {
+    const updateUser = () => {
         if(!username || !password || !nom || !prenom || !role) {
             setError('Vous devez remplir tous les champs obligatoires !')
             return false;
@@ -34,10 +36,10 @@ const AddUser = () => {
             prenom,
             status,
             role,
-            id: Date.now().toString()
+            id
         }
 
-        axios.post('http://localhost:8080/api/users', {
+        axios.post('http://localhost:8080/api/users/'+id, {
           ...newUser
         }).then((res)=>{
           if(res.status === 200) {
@@ -54,6 +56,18 @@ const AddUser = () => {
         //     navigate('/users')
         // }
     }
+
+    useEffect(()=> {
+      axios.get('http://localhost:8080/api/users/'+id).then((res)=>{
+        if(res.data.user) {
+          setUsername(res.data.user.name_user)
+          setNom(res.data.user.nom)
+          setPrenom(res.data.user.prenom)
+          setRole(res.data.user.role)
+          setStatus(res.data.user.active)
+        }
+      })
+    },[]);
     return (
         <>
         <Breadcrumb pageName="Ajouter utilisateur" />
@@ -173,7 +187,7 @@ const AddUser = () => {
             </div>
             <p className="text-danger">{error}</p>
            <div className="flex justify-center py-4">
-            <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={addUser}>Ajouter utilisateur</button>
+            <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={updateUser}>Modifier utilisateur</button>
            </div>
 
   
@@ -184,5 +198,5 @@ const AddUser = () => {
     );
 };
 
-export default AddUser;
+export default UpdateUser;
   

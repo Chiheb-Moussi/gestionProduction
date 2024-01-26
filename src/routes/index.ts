@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import Users from '../pages/Users/Users';
 import AddUser from '../pages/Users/AddUser';
+import UpdateUser from '../pages/Users/UpdateUser';
 import Products from '../pages/Products/Products';
 import AddProduct from '../pages/Products/AddProduct';
 import Interventions from '../pages/Interventions/Interventions';
@@ -72,6 +73,11 @@ const coreRoutes = [
     path: '/users/add',
     title: 'Ajouter utilisateur',
     component: AddUser,
+  },
+  {
+    path: '/users/:id',
+    title: 'Ajouter utilisateur',
+    component: UpdateUser,
   },
   {
     path: '/products',
