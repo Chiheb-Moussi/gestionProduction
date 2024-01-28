@@ -1,16 +1,15 @@
 export interface User {
-    id: string;
+    id: number;
     username: string;
     nom: string;
     prenom: string;
-    role: UserRoles;
-    status: boolean;
+    role: UserRole;
+    active: boolean;
     password: string;
+    isAdmin?: boolean
 }
 
-export enum UserRoles {
-    ADMIN = 'Admin',
-    SUPER_ADMIN = 'Super admin',
-    OPERATOR = 'Opérateur',
-    TECHNICIAN = 'Téchnicien'
+export interface UserRole {
+    id: number;
+    role: string;
 }

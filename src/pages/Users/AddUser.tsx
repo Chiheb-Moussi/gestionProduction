@@ -1,24 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
 import SwitcherThree from "../../components/SwitcherThree";
 import { useNavigate } from "react-router-dom";
-import { User, UserRoles } from "../../models/User";
+import { User, UserRole } from "../../models/User";
 import axios from "axios";
 
 const AddUser = () => {
-    const roles: string[] = [
-      UserRoles.SUPER_ADMIN,
-      UserRoles.ADMIN,
-      UserRoles.OPERATOR,
-      UserRoles.TECHNICIAN
-    ];
+
     const navigate = useNavigate();
+    const [roles,setRoles] = useState<UserRole[]>([]);
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [nom, setNom] = useState<string>('');
     const [prenom, setPrenom] = useState<string>('');
-    const [role, setRole] = useState<string>(roles[0]);
-    const [status, setStatus] = useState<boolean>(false);
+    const [role, setRole] = useState<UserRole|undefined>(undefined);
+    const [active, setActive] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
     const addUser = () => {
@@ -32,9 +28,9 @@ const AddUser = () => {
             password,
             nom,
             prenom,
-            status,
+            active,
             role,
-            id: Date.now().toString()
+            id: Date.now()
         }
 
         axios.post('http://localhost:8080/api/users', {
@@ -44,16 +40,17 @@ const AddUser = () => {
             navigate('/users');
           }
         })
-        
-
-        // const usersJson = localStorage.getItem('users');
-        // if(usersJson) {
-        //     const users = JSON.parse(usersJson);
-        //     const updatedUsers = [...users, {...newUser}];
-        //     localStorage.setItem('users', JSON.stringify(updatedUsers));
-        //     navigate('/users')
-        // }
     }
+
+    useEffect(()=> {
+      axios.get('http://localhost:8080/api/roles')
+          .then((res)=> {
+            if(res.data.roles) {
+              setRoles(res.data.roles)
+              setRole(res.data.roles[0]);
+            }
+          })
+    }, [])
     return (
         <>
         <Breadcrumb pageName="Ajouter utilisateur" />
@@ -134,13 +131,13 @@ const AddUser = () => {
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select 
                         className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                        value={role}
+                        value={role?.id}
                         onChange={(e) => {
-                            setRole(e.target.value)
+                            setRole(roles.find((role) => role.id === Number(e.target.value)))
                             setError('')
                         }}
                     >
-                        {roles.map(r => <option key={r} value={r}>{r}</option>)}
+                        {roles.map(r => <option key={r.id} value={r.id}>{r.role}</option>)}
                     </select>
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <svg
@@ -167,7 +164,7 @@ const AddUser = () => {
                   <label className="mb-3 block font-medium text-black dark:text-white">
                     Status *
                   </label>
-                  <SwitcherThree value={status} setValue={setStatus}/>
+                  <SwitcherThree value={active} setValue={setActive}/>
                 </div>
               </div>
             </div>

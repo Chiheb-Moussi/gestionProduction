@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
-import TableInterventions from "../../components/TableInterventions";
+import TableInterventions from "../../components/tables/TableInterventions";
 
 const Interventions = () => {
     return (

@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
-import {User} from '../models/User'
+import {User} from '../../models/User'
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 const TableUsers = () => {
-    // const usersJson = localStorage.getItem('users');
-    // const users: User[] = usersJson ? JSON.parse(usersJson) : [];
     const [users, setUsers] = useState<User[]>([]);
     useEffect(()=>{
         axios.get('http://localhost:8080/api/users').then((res)=>{
           if(res.data.users && res.data.users.length > 0) {
-            console.log('here');
-            
             const usersData = [];
             res.data.users.forEach(user => {
               usersData.push({
-                username: user.name_user,
+                username: user.username,
                 nom: user.nom,
                 prenom: user.prenom,
-                role: user.role,
-                status: user.status,
+                role: user.user_role,
+                active: user.active,
                 id: user.id,
               })
             });
@@ -26,7 +22,6 @@ const TableUsers = () => {
           }
         })
     },[])
-    console.log(users);
     
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -73,7 +68,7 @@ const TableUsers = () => {
 
 export default TableUsers;
 
-const UserRow = ({id, username, password, role, status, nom, prenom} : User) => {
+const UserRow = ({id, username, password, role, active, nom, prenom} : User) => {
     return (
         <div className="grid grid-cols-3 border-b border-stroke dark:border-strokedark sm:grid-cols-6">
           <div className="flex items-center gap-3 p-2.5 xl:p-5">
@@ -87,11 +82,11 @@ const UserRow = ({id, username, password, role, status, nom, prenom} : User) => 
           </div>
 
           <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <p className="text-black dark:text-white">{role}</p>
+            <p className="text-black dark:text-white">{role.role}</p>
           </div>
 
           <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <p className="text-meta-3">{status ? 'Active' : 'Désactivé'}</p>
+            <p className="text-meta-3">{active ? 'Active' : 'Désactivé'}</p>
           </div>
           <div className='flex items-center justify-center gap-2'>
             <Link to={`/users/${id}`} className='text-white bg-meta-3 px-4 py-2 rounded'>modifier</Link>

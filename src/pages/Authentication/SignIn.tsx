@@ -33,15 +33,6 @@ const SignIn = () => {
         setError('Vous n\'etes pas autorisé!')
       }
     })
-    // const user = users.find((u) => u.username === username && u.password === password)
-    // console.log(users);
-    
-    // if(user) {
-    //   navigate('/')
-    //   localStorage.setItem('user', JSON.stringify(user))
-    // }else {
-    //   setError('Vous n\'etes pas autorisé!')
-    // }
   }
 
   return (

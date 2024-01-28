@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Family, Line, Product, SubFamily } from "../../models/Product";
 
 import axios from "axios";
 
 
-const AddProduct = () => {
+const UpdateProduct = () => {
 
+    const {id} = useParams();
 
     const [lines, setLines] = useState<Line[]>([]);
     const [families, setFamilies] = useState<Family[]>([]);
@@ -25,7 +26,7 @@ const AddProduct = () => {
     const [line, setLine] = useState<Line|undefined>(undefined);
     const [error, setError] = useState<string>('');
 
-    const addProduct = () => {
+    const updateProduct = () => {
         if(!objective_fpy || !objective_trg || !item_code || !face || !name_prog || !family !|| !sub_family || !cadence || !line) {
             setError('Vous devez remplir tous les champs obligatoires !')
             return false;
@@ -44,7 +45,7 @@ const AddProduct = () => {
             id: Date.now()
         }
 
-        axios.post('http://localhost:8080/api/products',{
+        axios.post('http://localhost:8080/api/products/'+id,{
           ...newProduct
         })
         .then((res)=> {
@@ -66,15 +67,24 @@ const AddProduct = () => {
               setFamily(res.data.families[0]);
               const filtredSubFamilies = res.data.subFamilies.filter(f=>f.id_family === res.data.families[0].id) ?? []
               setSubFamilies(filtredSubFamilies);
-              setsub_family(filtredSubFamilies.length > 0 ? filtredSubFamilies[0] : undefined)
             }
             setLines(res.data.lines);
-            if(res.data.lines && res.data.lines.length >0) {
-              setLine(res.data.lines[0]?? undefined);
-            }
-            
           }
         })
+      axios.get('http://localhost:8080/api/products/'+id).then((res)=> {
+        if(res.data.product) {
+          const productData: Product = res.data.product
+          setitem_code(productData.item_code)
+          setobjective_fpy(productData.objective_fpy)
+          setobjective_trg(productData.objective_trg)
+          setFamily(productData.family)
+          setsub_family(productData.sub_family)
+          setLine(productData.line)
+          setcadence(productData.cadence)
+          setface(productData.face)
+          setname_prog(productData.name_prog)
+        }
+      });
     },[])
     return (
         <>
@@ -216,11 +226,6 @@ const AddProduct = () => {
                         value={line?.id}
                         onChange={(e) => {
                             setLine(lines.find(l=>l.id === Number(e.target.value)))
-                            // const selectedFamily = families.find(f => f.name === e.target.value)
-                            // if(selectedFamily) {
-                            //     setSubFamilies(selectedFamily.subFamilies);
-                            //     setsubFamily(selectedFamily.subFamilies[0]);
-                            // }
                             setError('')
                         }}
                     >
@@ -296,7 +301,7 @@ const AddProduct = () => {
             </div>
             <p className="text-danger">{error}</p>
            <div className="flex justify-center py-4">
-            <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={addProduct}>Ajouter produit</button>
+            <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={updateProduct}>Modifier produit</button>
            </div>
 
   
@@ -307,5 +312,5 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default UpdateProduct;
   

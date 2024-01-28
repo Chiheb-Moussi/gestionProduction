@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Intervention, TypeIntervention } from "../../models/Intervention";
 import axios from "axios";
 import { Line } from "../../models/Product";
 
-const AddIntervention = () => {
+const UpdateIntervention = () => {
     const userJson = localStorage.getItem('user');
     const user =  userJson ? JSON.parse(userJson): undefined;
 
+    const {id} = useParams();
 
 
     const detail_interventions: string[] = [
@@ -26,6 +27,7 @@ const AddIntervention = () => {
     const [date_fin, setDateFin] = useState<string|undefined>(undefined);
     const [line, setline] = useState<Line|undefined>(undefined);
     const [error, setError] = useState<string>('');
+console.log(type_intervention);
 
     const addIntervention = () => {
         if(!type_intervention || (type_intervention.name_discontinue === 'Arrêt non planifié' && !detail_intervention) || !date_debut || !line) {
@@ -46,10 +48,9 @@ const AddIntervention = () => {
             is_open: Boolean(date_fin)
         }
 
-        console.log(newIntervention);
         
         
-        axios.post('http://localhost:8080/api/interventions',{
+        axios.post('http://localhost:8080/api/interventions/'+id,{
             ...newIntervention
         }).then((res)=> {
             if(res.status === 200) {
@@ -62,9 +63,17 @@ const AddIntervention = () => {
         axios.get('http://localhost:8080/api/interventionRelations').then((res)=> {
             if(res.data) {
                 setTypeInterventions(res.data.type_interventions)
-                setTypeIntervention((res.data.type_interventions && res.data.type_interventions.length > 0 )? res.data.type_interventions[0]: undefined)
                 setLines(res.data.lines)
-                setline((res.data.lines && res.data.lines.length > 0 )? res.data.lines[0]: undefined)
+            }
+        })
+        axios.get('http://localhost:8080/api/interventions/'+id).then((res)=>{
+            if(res.data.intervention) {
+                const interventionData = res.data.intervention
+                setDateDebut(interventionData.date_debut)
+                setDateFin(interventionData.date_fin)
+                setline(interventionData.line)
+                setTypeIntervention(interventionData.type_intervention)
+                setDetailIntervention(interventionData.detail_intervention)
             }
         })
     },[])
@@ -224,7 +233,7 @@ const AddIntervention = () => {
                     </div>
                     <p className="text-danger">{error}</p>
                     <div className="flex justify-center py-4">
-                        <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={addIntervention}>Ajouter intervention</button>
+                        <button className="inline-flex items-center justify-center rounded bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" onClick={addIntervention}>Modifier intervention</button>
                     </div>
                 </div>
             </div>
@@ -232,5 +241,5 @@ const AddIntervention = () => {
     );
 };
 
-export default AddIntervention;
+export default UpdateIntervention;
   

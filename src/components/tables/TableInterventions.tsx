@@ -1,8 +1,17 @@
 import { Link } from 'react-router-dom';
-import {Intervention} from '../models/Intervention'
+import {Intervention} from '../../models/Intervention'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { formatDate } from '../../utils';
 const TableInterventions = () => {
-    const interventionsJson = localStorage.getItem('interventions');
-    const interventions: Intervention[] = interventionsJson ? JSON.parse(interventionsJson) : [];
+    const [interventions, setInterventions] = useState<Intervention[]>([]);
+    useEffect(()=> {
+      axios.get('http://localhost:8080/api/interventions').then((res)=>{
+        if(res.data.interventions) {
+          setInterventions(res.data.interventions);
+        }
+      })
+    },[])
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       
@@ -54,30 +63,30 @@ const TableInterventions = () => {
 
 export default TableInterventions;
 
-const InterventionRow = ({id,nameLine,dateDebut,dateFin,detailIntervention,isOpen,typeIntervention,rapportIntervention,user } : Intervention) => {
+const InterventionRow = ({id,line,date_debut,date_fin,detail_intervention,is_open,type_intervention,rapportIntervention,user } : Intervention) => {
     return (
         <div className="grid grid-cols-3 border-b border-stroke dark:border-strokedark sm:grid-cols-7">
           <div className="flex items-center gap-3 p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">{typeIntervention}</p>
+            <p className="hidden text-black dark:text-white sm:block">{type_intervention.name_discontinue}</p>
           </div>
           <div className="flex items-center gap-3 p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">{detailIntervention}</p>
+            <p className="hidden text-black dark:text-white sm:block">{detail_intervention}</p>
           </div>
           <div className="flex items-center gap-3 p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">{dateDebut}</p>
+            <p className="hidden text-black dark:text-white sm:block">{formatDate(date_debut)}</p>
           </div>
           <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">{nameLine}</p>
+            <p className="hidden text-black dark:text-white sm:block">{line.name_line}</p>
           </div>
           <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">{!isOpen ? 'En cours' : 'Terminé'}</p>
+            <p className="hidden text-black dark:text-white sm:block">{!is_open ? 'En cours' : 'Terminé'}</p>
           </div>
           <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <p className="text-black dark:text-white">{dateFin}</p>
+            <p className="text-black dark:text-white">{formatDate(date_fin)}</p>
           </div>
           <div className='flex items-center justify-center gap-2'>
-            <button className='text-white bg-meta-3 px-4 py-2 rounded'>modifier</button>
-            <Link to={`/interventions/${id}`} className='text-white bg-primary px-4 py-2 rounded'>voir</Link>
+          <Link to={`/interventions/${id}`} className='text-white bg-meta-3 px-4 py-2 rounded'>modifier</Link>
+            <Link to={`/interventions/detail/${id}`} className='text-white bg-primary px-4 py-2 rounded'>voir</Link>
           </div>
         </div>
     )

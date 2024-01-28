@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumb";
-import TableProducts from "../../components/TableProducts";
+import TableProducts from "../../components/tables/TableProducts";
 
 const Products = () => {
     return (

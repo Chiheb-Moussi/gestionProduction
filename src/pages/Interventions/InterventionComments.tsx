@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Comment } from "../../models/Intervention";
-import { User, UserRoles } from "../../models/User";
+import { User } from "../../models/User";
 import moment from "moment";
 
 type CommentRowProps ={
@@ -13,7 +13,7 @@ type CommentRowProps ={
 const CommentRow = ({commentObj,loggedUser,setSelectedComment,setShowTextArea}:CommentRowProps) => {
     
     const {id,comment,date,user} = commentObj;
-    const isAdmin = loggedUser && [UserRoles.ADMIN, UserRoles.SUPER_ADMIN].includes(loggedUser.role);
+    const isAdmin = loggedUser && [''].includes(loggedUser.role.role);
     const updateCommentHanlder = () => {
         setSelectedComment(commentObj);
         setShowTextArea(true);
@@ -72,7 +72,7 @@ const CommentTextArea = ( {loggedUser, comment,date,id,idIntervention,comments, 
     )
 
 }
-const InterventionComments = ({idIntervention}: {idIntervention: string}) => {
+const InterventionComments = ({idIntervention}: {idIntervention: number}) => {
     const commentsJson = localStorage.getItem('comments');
     const comments: Comment[] = commentsJson ? JSON.parse(commentsJson) : [];
 

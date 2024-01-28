@@ -1,17 +1,23 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Intervention } from "../../models/Intervention";
 import InterventionComments from "./InterventionComments";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { formatDate } from "../../utils";
 
 const InterventionDetail = () => {
     const {id : idIntervention} = useParams();
-    const interventionsJson = localStorage.getItem('interventions');
-    const interventions: Intervention[] = interventionsJson ? JSON.parse(interventionsJson) : [];
-    const intervention: Intervention|undefined = interventions.find((i) => i.id === idIntervention);
-    if(!intervention) {
-        return <> Pas d'intervention trouvé</>
-    }
+    const [intervention, setIntervention] = useState<Intervention|undefined>(undefined)
 
-    const {id, typeIntervention, dateDebut, isOpen,nameLine,actions, comments,dateFin,detailIntervention,rapportInterventions,user} = intervention;
+    useEffect(()=> {
+        axios.get('http://localhost:8080/api/interventions/'+idIntervention).then((res)=> {
+            if(res.data.intervention) {
+                setIntervention(res.data.intervention)
+            }
+        })
+    },[])
+
+    
     return (
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
             <div className="col-span-12 xl:col-span-8">
@@ -28,16 +34,16 @@ const InterventionDetail = () => {
                                     Type d'intervention
                                 </span>
                                 <div className="relative z-20 bg-white dark:bg-form-input">
-                                    <span>{typeIntervention}</span>
+                                    <span>{intervention?.type_intervention?.name_discontinue}</span>
                                 </div>
                             </div>
     
-                            {typeIntervention === 'Arrêt non planifié' && (<div>
+                            {intervention?.type_intervention.name_discontinue === 'Arrêt non planifié' && (<div>
                                 <span className="mb-3 block text-black dark:text-white">
                                     Détail d'intervention
                                 </span>
                                 <div className="relative z-20 bg-white dark:bg-form-input">
-                                    <span>{detailIntervention}</span>
+                                    <span>{intervention?.detail_intervention}</span>
                                 </div>
                             </div>)}
                             <div>
@@ -45,7 +51,7 @@ const InterventionDetail = () => {
                                     Date de début
                                 </span>
                                 <div className="relative z-20 bg-white dark:bg-form-input">
-                                    <span>{dateDebut}</span>
+                                    <span>{formatDate(intervention?.date_debut)}</span>
                                 </div>
                             </div>
                             <div>
@@ -53,7 +59,7 @@ const InterventionDetail = () => {
                                     Date de fin
                                 </span>
                                 <div className="relative z-20 bg-white dark:bg-form-input">
-                                    <span>{dateFin}</span>
+                                    <span>{formatDate(intervention?.date_fin)}</span>
                                 </div>
                             </div>
                             <div>
@@ -61,7 +67,7 @@ const InterventionDetail = () => {
                                 Nom de ligne *
                             </span>
                             <div className="relative z-20 bg-white dark:bg-form-input">
-                                <span>{nameLine}</span>
+                                <span>{intervention?.line?.name_line}</span>
                             </div>
                             </div>
                             
@@ -69,7 +75,7 @@ const InterventionDetail = () => {
                     </div>
                 </div>
             </div>
-            <InterventionComments idIntervention={id} />
+            <InterventionComments idIntervention={idIntervention} />
         </div>
     );
 }

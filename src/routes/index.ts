@@ -7,6 +7,8 @@ import AddProduct from '../pages/Products/AddProduct';
 import Interventions from '../pages/Interventions/Interventions';
 import AddIntervention from '../pages/Interventions/AddIntervention';
 import InterventionDetail from '../pages/Interventions/InterventionDetail';
+import UpdateProduct from '../pages/Products/UpdateProduct';
+import UpdateIntervention from '../pages/Interventions/UpdateIntervention';
 
 const Calendar = lazy(() => import('../pages/Calendar'));
 const Chart = lazy(() => import('../pages/Chart'));
@@ -76,7 +78,7 @@ const coreRoutes = [
   },
   {
     path: '/users/:id',
-    title: 'Ajouter utilisateur',
+    title: 'Modifier utilisateur',
     component: UpdateUser,
   },
   {
@@ -90,6 +92,11 @@ const coreRoutes = [
     component: AddProduct,
   },
   {
+    path: '/products/:id',
+    title: 'Modifier produit',
+    component: UpdateProduct,
+  },
+  {
     path: '/interventions',
     title: 'Liste des interventions',
     component: Interventions,
@@ -101,6 +108,11 @@ const coreRoutes = [
   },
   {
     path: '/interventions/:id',
+    title: 'Intervention',
+    component: UpdateIntervention,
+  },
+  {
+    path: '/interventions/detail/:id',
     title: 'Intervention',
     component: InterventionDetail,
   },

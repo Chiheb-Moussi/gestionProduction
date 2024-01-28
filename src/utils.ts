@@ -1,4 +1,7 @@
-export function formatDate(inputDate: string) {
+export function formatDate(inputDate: string | undefined) {
+    if(!inputDate) {
+        return ''
+    }
     const date = new Date(inputDate);
     const formattedDate = date.toLocaleString('en-US', {
         year: 'numeric',
